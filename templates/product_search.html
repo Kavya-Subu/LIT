@@ -1,0 +1,18 @@
+{% extends "home.html" %}
+
+{% block content %}
+<form action="/menu/" method="GET">
+    {% csrf_token %}
+    <input type=" text" name = 'q'>
+    <input type="submit">
+  
+  </form>
+<ol>
+{% for object in obj_list %}
+    {% if object.Product_no %}
+        <li><a href =  '/product/{{object.id}}/'> {{ object.Product_no }} -{{object.Product_name}} </a></li>
+      
+    {% endif %}
+{% endfor %}
+</ol>
+{% endblock content %}

@@ -1,0 +1,31 @@
+{% extends "home.html" %}
+
+{% block content %}
+
+{% if not request.user.is_authenticated %}
+
+    <body >
+       
+
+
+        <div class="container-fluid text-center p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle">
+            <h1>Register</h1>
+        </div>
+
+        <div class="container-fluid mx-auto p-2" style="width: 300px;">
+
+          <form method = "POST">
+            {% csrf_token %}
+            <div class="mb-3">
+            {{ form.as_p }} 
+            
+     
+            <button type="submit" class="btn btn-primary">Submit</button> 
+        
+        </div>
+{% else %}
+        <p> You're already logged in! Would you like to <a href = '/logout/'>logout</a> ?</p>
+{% endif %}        
+       
+    </body>
+{% endblock content %}  
