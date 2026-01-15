@@ -1,0 +1,28 @@
+{% extends "home.html" %}
+
+{% block content %}
+
+<h1> Create Topics </h1>
+{% if not created %}
+    <div style="margin-top: 30px ;">
+
+    <form method="POST">
+        {% csrf_token %} 
+        {{ form.as_p }}
+        <!-- <input type="text" name = "tittle" placeholder="Tittle"/>
+        <br>
+        <textarea name="content" id="" cols="30" rows="10" placeholder="Content here
+        "></textarea>
+        <br> -->
+        <button type="submit">Create</button>
+
+    </form>
+    </div>
+{% else %}
+    <h3>Created!</h3>
+    <a href = '/product/{{obj.id}}/'>{{obj.Product_no}}</a> 
+    <br>
+    
+{% endif %}
+
+{% endblock content %}
