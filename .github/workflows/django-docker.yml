@@ -1,0 +1,38 @@
+name: Django Docker CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker build -t lit-ci .
+
+      - name: Run Django container
+        run: |
+          docker run -d \
+            -e DJANGO_SECRET_KEY=ci-secret \
+            -p 8000:8000 \
+            --name lit_test \
+            lit-ci
+
+      - name: Wait for app
+        run: sleep 10
+
+      - name: Test Django app
+        run: curl --fail http://localhost:8000
+
+      - name: Stop container
+        run: docker stop lit_test
