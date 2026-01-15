@@ -1,5 +1,6 @@
-name: Django Docker CI
+nname: Django Docker CI
 
+# Trigger workflow on push or pull request to main branch
 on:
   push:
     branches: [ "main" ]
@@ -7,19 +8,23 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build-test-migrate:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Step 3: Build the Docker image
       - name: Build Docker image
         run: docker build -t lit-ci .
 
+      # Step 4: Run the container in detached mode
       - name: Run Django container
         run: |
           docker run -d \
@@ -28,11 +33,24 @@ jobs:
             --name lit_test \
             lit-ci
 
-      - name: Wait for app
+      # Step 5: Wait for Django server to start
+      - name: Wait for server
         run: sleep 10
 
-      - name: Test Django app
+      # Step 6: Run migrations inside the container
+      - name: Apply migrations
+        run: docker exec lit_test python inventory/manage.py migrate
+
+      # Step 7: Run Django tests inside the container
+      - name: Run Django tests
+        run: docker exec lit_test python inventory/manage.py test
+
+      # Step 8: Optional - Verify the server is running
+      - name: Test Django server
         run: curl --fail http://localhost:8000
 
-      - name: Stop container
-        run: docker stop lit_test
+      # Step 9: Stop and remove the container
+      - name: Stop and remove container
+        run: |
+          docker stop lit_test
+          docker rm lit_test
