@@ -19,8 +19,8 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}  # set to ikavya23 in secrets
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}  # set your Docker Hub password in secrets
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}  # your Docker Hub username
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}  # Docker Hub password stored in secrets
 
       # Step 3: Set up Docker Buildx
       - name: Set up Docker Buildx
@@ -41,7 +41,7 @@ jobs:
             -e DJANGO_SECRET_KEY=ci-secret \
             -w /app \
             ikavya23/lit-app:latest \
-            python inventory/manage.py migrate
+            python manage.py migrate
 
       # Step 7: Run Django tests inside Docker container
       - name: Run Django tests
@@ -50,4 +50,4 @@ jobs:
             -e DJANGO_SECRET_KEY=ci-secret \
             -w /app \
             ikavya23/lit-app:latest \
-            python inventory/manage.py test
+            python manage.py test

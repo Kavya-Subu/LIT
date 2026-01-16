@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Copy all project files into container
-COPY inventory/ inventory/
+COPY . .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -20,5 +20,5 @@ EXPOSE 8000
 
 # Start Django using Gunicorn
 # wsgi.py is now in the same folder as manage.py (inventory/)
-CMD ["gunicorn", "wsgi:application", "--chdir", "inventory", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "inventory.wsgi:application", "--bind", "0.0.0.0:8000"]
 
