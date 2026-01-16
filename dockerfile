@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Copy all project files into container
-COPY . .
+COPY inventory/ inventory/
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
