@@ -1,46 +1,32 @@
-name: Django Docker CI
+name: Django CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
-  build-test-migrate:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
       # Step 1: Checkout code
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # Step 2: Set up Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      # Step 2: Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
       # Step 3: Build Docker image
       - name: Build Docker image
         run: docker build -t lit-ci .
 
-      # Step 4: Apply migrations inside container
+      # Step 4: Apply migrations inside Docker container
       - name: Apply migrations
-        run: docker run --rm \
-          -e DJANGO_SECRET_KEY=ci-secret \
-          -w /app/inventory \
-          lit-ci python manage.py migrate
+        run: docker run --rm -e DJANGO_SECRET_KEY=ci-secret -w /app lit-ci python manage.py migrate
 
-      # Step 5: Run Django tests inside container
+      # Step 5: Run Django tests inside Docker container
       - name: Run Django tests
-        run: docker run --rm \
-          -e DJANGO_SECRET_KEY=ci-secret \
-          -w /app/inventory \
-          lit-ci python manage.py test
-
-      # Step 6: Optional — test if server responds
-      - name: Test Django server
-        run: docker run --rm \
-          -e DJANGO_SECRET_KEY=ci-secret \
-          -w /app/inventory \
-          -p 8000:8000 \
-          lit-ci curl --fail http://localhost:8000
+        run: docker run --rm -e DJANGO_SECRET_KEY=ci-secret -w /app lit-ci python manage.py test
