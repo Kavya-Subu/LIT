@@ -1,17 +1,11 @@
-# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 *.sqlite3
-*.db
 *.env
 venv/
 env/
-
-# IDEs
 .vscode/
 .idea/
-
-# macOS
 .DS_Store
